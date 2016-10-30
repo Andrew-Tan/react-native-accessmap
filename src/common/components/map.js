@@ -10,8 +10,7 @@ import {
     StatusBar,
     View,
     ScrollView,
-    TouchableHighlight,
-    Platform
+    TouchableHighlight
 } from 'react-native';
 
 const accessToken = 'pk.eyJ1IjoiYml0bG9ja2VyIiwiYSI6ImNpdWVxdzQ2ZjAwY2oyeXJ1ZHBnOHg4ZGcifQ.k1PUnopcHUTI4vcuP1qvkg';
@@ -200,16 +199,12 @@ export default class Map extends Component {
     }
 
     _renderButtons() {
-        var TouchableElement = TouchableHighlight;
-        if (Platform.OS === 'android') {
-            TouchableElement = TouchableNativeFeedback;
-        }
         return (
             <View>
                 <Text style={styles.view_text}>User tracking mode is {this.state.userTrackingMode}</Text>
                 <Text style={styles.view_text}>Center is [{this.state.center.latitude}, {this.state.center.longitude}]</Text>
                 <Text style={styles.view_text}>Zoom level is {this.state.zoom}</Text>
-                <TouchableElement
+                <TouchableHighlight
                     activeOpacity={50}
                     underlayColor={'#00008b'}
                     style={styles.button}
@@ -217,8 +212,8 @@ export default class Map extends Component {
                     <View>
                         <Text style={styles.button_text}>Set tracking mode to follow with heading</Text>
                     </View>
-                </TouchableElement>
-                <TouchableElement
+                </TouchableHighlight>
+                <TouchableHighlight
                     activeOpacity={50}
                     underlayColor={'#00008b'}
                     style={styles.button}
@@ -226,8 +221,8 @@ export default class Map extends Component {
                     <View>
                         <Text style={styles.button_text}>Set tracking mode to none</Text>
                     </View>
-                </TouchableElement>
-                <TouchableElement
+                </TouchableHighlight>
+                <TouchableHighlight
                     activeOpacity={50}
                     underlayColor={'#00008b'}
                     style={styles.button}
@@ -235,8 +230,8 @@ export default class Map extends Component {
                     <View>
                         <Text style={styles.button_text}>Zoom out to zoom level 6</Text>
                     </View>
-                </TouchableElement>
-                <TouchableElement
+                </TouchableHighlight>
+                <TouchableHighlight
                     activeOpacity={50}
                     underlayColor={'#00008b'}
                     style={styles.button}
@@ -245,8 +240,8 @@ export default class Map extends Component {
                         <Text style={styles.button_text}>
                             Go to UW at current zoom level {parseInt(this.state.currentZoom)}</Text>
                     </View>
-                </TouchableElement>
-                <TouchableElement
+                </TouchableHighlight>
+                <TouchableHighlight
                     activeOpacity={50}
                     underlayColor={'#00008b'}
                     style={styles.button}
@@ -255,8 +250,8 @@ export default class Map extends Component {
                         <Text style={styles.button_text}>
                             Go to UW at zoom level 14</Text>
                     </View>
-                </TouchableElement>
-                <TouchableElement
+                </TouchableHighlight>
+                <TouchableHighlight
                     activeOpacity={50}
                     underlayColor={'#00008b'}
                     style={styles.button}
@@ -265,8 +260,8 @@ export default class Map extends Component {
                         <Text style={styles.button_text}>
                             Go to Paris at current zoom level {parseInt(this.state.currentZoom)}</Text>
                     </View>
-                </TouchableElement>
-                <TouchableElement
+                </TouchableHighlight>
+                <TouchableHighlight
                     activeOpacity={50}
                     underlayColor={'#00008b'}
                     style={styles.button}
@@ -274,8 +269,8 @@ export default class Map extends Component {
                     <View>
                         <Text style={styles.button_text}>Set pitch to 60 degrees</Text>
                     </View>
-                </TouchableElement>
-                <TouchableElement
+                </TouchableHighlight>
+                <TouchableHighlight
                     activeOpacity={50}
                     underlayColor={'#00008b'}
                     style={styles.button}
@@ -283,8 +278,8 @@ export default class Map extends Component {
                     <View>
                         <Text style={styles.button_text}>Set pitch to 0 degree</Text>
                     </View>
-                </TouchableElement>
-                <TouchableElement
+                </TouchableHighlight>
+                <TouchableHighlight
                     activeOpacity={50}
                     underlayColor={'#00008b'}
                     style={styles.button}
@@ -292,8 +287,8 @@ export default class Map extends Component {
                     <View>
                         <Text style={styles.button_text}>Add marker at UW</Text>
                     </View>
-                </TouchableElement>
-                <TouchableElement
+                </TouchableHighlight>
+                <TouchableHighlight
                     activeOpacity={50}
                     underlayColor={'#00008b'}
                     style={styles.button}
@@ -301,8 +296,8 @@ export default class Map extends Component {
                     <View>
                         <Text style={styles.button_text}>Open UW marker popup</Text>
                     </View>
-                </TouchableElement>
-                <TouchableElement
+                </TouchableHighlight>
+                <TouchableHighlight
                     activeOpacity={50}
                     underlayColor={'#00008b'}
                     style={styles.button}
@@ -310,7 +305,7 @@ export default class Map extends Component {
                     <View>
                         <Text style={styles.button_text}>Remove all annotations</Text>
                     </View>
-                </TouchableElement>
+                </TouchableHighlight>
                 <Text onPress={() => this._map && this._map.setDirection(0)}>
                     Set direction to 0
                 </Text>
