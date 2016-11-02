@@ -13,6 +13,8 @@ import {
     TouchableHighlight
 } from 'react-native';
 
+import {get_route} from '../actions/route';
+
 const accessToken = 'pk.eyJ1IjoiYml0bG9ja2VyIiwiYSI6ImNpdWVxdzQ2ZjAwY2oyeXJ1ZHBnOHg4ZGcifQ.k1PUnopcHUTI4vcuP1qvkg';
 Mapbox.setAccessToken(accessToken);
 
@@ -181,7 +183,7 @@ export default class Map extends Component {
                     styleURL={Mapbox.mapStyles.dark}
                     userTrackingMode={this.state.userTrackingMode}
                     annotations={this.state.annotations}
-                    annotationsAreImmutable
+                    annotationsAreImmutable={true}
                     onChangeUserTrackingMode={this.onChangeUserTrackingMode}
                     onRegionDidChange={this.onRegionDidChange}
                     onRegionWillChange={this.onRegionWillChange}
@@ -204,6 +206,15 @@ export default class Map extends Component {
                 <Text style={styles.view_text}>User tracking mode is {this.state.userTrackingMode}</Text>
                 <Text style={styles.view_text}>Center is [{this.state.center.latitude}, {this.state.center.longitude}]</Text>
                 <Text style={styles.view_text}>Zoom level is {this.state.zoom}</Text>
+                <TouchableHighlight
+                    activeOpacity={50}
+                    underlayColor={'#00008b'}
+                    style={styles.button}
+                    onPress={() => get_route(this, [47.663593, -122.313823], [47.662437, -122.316162])}>
+                    <View>
+                        <Text style={styles.button_text}>Draw Route</Text>
+                    </View>
+                </TouchableHighlight>
                 <TouchableHighlight
                     activeOpacity={50}
                     underlayColor={'#00008b'}
