@@ -10,64 +10,27 @@ import {
     StatusBar,
     View,
     ScrollView,
-    TouchableHighlight
+    TouchableHighlight,
+    TextInput,
+    KeyboardAvoidingView
 } from 'react-native';
 
 import {get_route} from '../actions/route';
+import {access_token} from '../api'
 
-const accessToken = 'pk.eyJ1IjoiYml0bG9ja2VyIiwiYSI6ImNpdWVxdzQ2ZjAwY2oyeXJ1ZHBnOHg4ZGcifQ.k1PUnopcHUTI4vcuP1qvkg';
-Mapbox.setAccessToken(accessToken);
+Mapbox.setAccessToken(access_token);
 
 export default class Map extends Component {
     state = {
         center: {
-            latitude: 40.72052634,
-            longitude: -73.97686958312988
+            latitude: 47.6527025,
+            longitude: -122.3075777
         },
         zoom: 11,
+        origin: null,
+        dest: null,
         userTrackingMode: Mapbox.userTrackingMode.none,
-        annotations: [{
-            coordinates: [40.72052634, -73.97686958312988],
-            type: 'point',
-            title: 'This is marker 1',
-            subtitle: 'It has a rightCalloutAccessory too',
-            rightCalloutAccessory: {
-                source: {uri: 'https://cldup.com/9Lp0EaBw5s.png'},
-                height: 25,
-                width: 25
-            },
-            annotationImage: {
-                source: {uri: 'https://cldup.com/CnRLZem9k9.png'},
-                height: 25,
-                width: 25
-            },
-            id: 'marker1'
-        }, {
-            coordinates: [40.714541341726175, -74.00579452514648],
-            type: 'point',
-            title: 'Important!',
-            subtitle: 'Neat, this is a custom annotation image',
-            annotationImage: {
-                source: {uri: 'https://cldup.com/7NLZklp8zS.png'},
-                height: 25,
-                width: 25
-            },
-            id: 'marker2'
-        }, {
-            coordinates: [[40.76572150042782, -73.99429321289062], [40.743485405490695, -74.00218963623047], [40.728266950429735, -74.00218963623047], [40.728266950429735, -73.99154663085938], [40.73633186448861, -73.98983001708984], [40.74465591168391, -73.98914337158203], [40.749337730454826, -73.9870834350586]],
-            type: 'polyline',
-            strokeColor: '#00FB00',
-            strokeWidth: 4,
-            strokeAlpha: .5,
-            id: 'foobar'
-        }, {
-            coordinates: [[40.749857912194386, -73.96820068359375], [40.741924698522055, -73.9735221862793], [40.735681504432264, -73.97523880004883], [40.7315190495212, -73.97438049316406], [40.729177554196376, -73.97180557250975], [40.72345355209305, -73.97438049316406], [40.719290332250544, -73.97455215454102], [40.71369559554873, -73.97729873657227], [40.71200407096382, -73.97850036621094], [40.71031250340588, -73.98691177368163], [40.71031250340588, -73.99154663085938]],
-            type: 'polygon',
-            fillAlpha: 1,
-            strokeColor: '#ffffff',
-            fillColor: '#0000ff',
-            id: 'zap'
-        }]
+        annotations: []
     };
 
     onRegionDidChange = (location) => {
@@ -90,7 +53,37 @@ export default class Map extends Component {
         console.log('onLongPress', location);
     };
     onTap = (location) => {
-        console.log('onTap', location);
+        if (this.state.origin == null) {
+            this.state.origin = [location.latitude, location.longitude];
+            var org = this.getMarker(this.state.origin, 'Orig', 'Origin', 'origin');
+            this.insertAnnotation(org);
+            return;
+        }
+
+        if (this.state.dest == null) {
+            this.state.dest = [location.latitude, location.longitude];
+            var des = this.getMarker(this.state.dest, 'Dest', 'Destination', 'destination');
+            this.insertAnnotation(des);
+
+            get_route(this.state.origin, this.state.dest, this.displayRoute);
+            return;
+        }
+
+        this.setState({
+            annotations: this.state.annotations.filter(a => (a.id !== 'origin' && a.id !== 'destination' && a.id !== 'route'))
+        });
+
+        this.state.origin = null;
+        this.state.dest = null;
+    };
+    getMarker = (location,title,subtitle,markerid) => {
+        return {
+            coordinates: location,
+            type: 'point',
+            title: title,
+            subtitle: subtitle,
+            id: markerid
+        }
     };
     onChangeUserTrackingMode = (userTrackingMode) => {
         this.setState({userTrackingMode});
@@ -164,10 +157,47 @@ export default class Map extends Component {
         });
     };
 
+    insertAnnotation = (annotation) => {
+        this.setState({
+            annotations: [...this.state.annotations, annotation]
+        });
+    };
+
+    displayRoute = (annotation) => {
+        this.insertAnnotation(annotation);
+
+        var min_longitude = 500;
+        var min_latitude = 500;
+        var max_longitude = -500;
+        var max_latitude = -500;
+        annotation.coordinates.forEach(function (point) {
+            if (point[0] < min_latitude) {
+                min_latitude = point[0];
+            }
+
+            if (point[0] > max_latitude) {
+                max_latitude = point[0];
+            }
+
+            if (point[1] < min_longitude) {
+                min_longitude = point[1];
+            }
+
+            if (point[1] > max_longitude) {
+                max_longitude = point[1];
+            }
+        });
+
+        this._map.setVisibleCoordinateBounds(min_latitude, min_longitude, max_latitude, max_longitude, 50, 50, 50, 50);
+    };
+
     render() {
         StatusBar.setHidden(true);
         return (
             <View style={styles.container}>
+                <ScrollView style={styles.scrollView}>
+                    {this._renderButtons()}
+                </ScrollView>
                 <MapView
                     ref={map => {
                         this._map = map;
@@ -192,10 +222,8 @@ export default class Map extends Component {
                     onUpdateUserLocation={this.onUpdateUserLocation}
                     onLongPress={this.onLongPress}
                     onTap={this.onTap}
+                    logoIsHidden={true}
                 />
-                <ScrollView style={styles.scrollView}>
-                    {this._renderButtons()}
-                </ScrollView>
             </View>
         );
     }
@@ -206,11 +234,16 @@ export default class Map extends Component {
                 <Text style={styles.view_text}>User tracking mode is {this.state.userTrackingMode}</Text>
                 <Text style={styles.view_text}>Center is [{this.state.center.latitude}, {this.state.center.longitude}]</Text>
                 <Text style={styles.view_text}>Zoom level is {this.state.zoom}</Text>
+                <TextInput
+                    style={styles.text_input}
+                    onChangeText={(text) => this.setState({text})}
+                    value={this.state.text}
+                />
                 <TouchableHighlight
                     activeOpacity={50}
                     underlayColor={'#00008b'}
                     style={styles.button}
-                    onPress={() => get_route(this, [47.663593, -122.313823], [47.662437, -122.316162])}>
+                    onPress={() => get_route([47.663593, -122.313823], [47.662437, -122.316162], this.displayRoute)}>
                     <View>
                         <Text style={styles.button_text}>Draw Route</Text>
                     </View>
@@ -422,6 +455,18 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         marginRight: 5,
         backgroundColor: '#6495ed',
+    },
+    text_input:{
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        borderRadius: 5,
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 5,
+        marginRight: 5,
+        paddingLeft: 10,
+        paddingRight: 10
     },
     view_text: {
         marginTop: 5,
