@@ -25,6 +25,7 @@
 		3D29EE3BA26F47D0A926FA7E /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1544812274F74D989E9FCDA5 /* libRCTActionSheet.a */; };
 		4367232A1320434CB3086BCB /* libRCTMapboxGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E5899F4EC98C41E38038D8BE /* libRCTMapboxGL.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		89D7410E1DCDAD2C00A9DBCE /* libReact-Native-Webview-Bridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89D7410B1DCDAC9400A9DBCE /* libReact-Native-Webview-Bridge.a */; };
 		89FDAA431DC46A12007C1C23 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89FDAA421DC46A12007C1C23 /* Mapbox.framework */; };
 		89FDAA441DC46A12007C1C23 /* Mapbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89FDAA421DC46A12007C1C23 /* Mapbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89FDAA481DC46B1A007C1C23 /* libRCTMapboxGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89FDAA2A1DC46971007C1C23 /* libRCTMapboxGL.a */; };
@@ -136,6 +137,13 @@
 			remoteGlobalIDString = C5DBB34B1AF2EF2B00E611A9;
 			remoteInfo = RCTMapboxGLTests;
 		};
+		89D7410A1DCDAC9400A9DBCE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 89D740F11DCDAC9300A9DBCE /* React-Native-Webview-Bridge.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4114DC4C1C187C3A003CD988;
+			remoteInfo = "React-Native-Webview-Bridge";
+		};
 		89FDAA211DC46971007C1C23 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 00C302BB1ABCB91800DB3ED1 /* RCTImage.xcodeproj */;
@@ -238,6 +246,7 @@
 		1544812274F74D989E9FCDA5 /* libRCTActionSheet.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTActionSheet.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		89D740F11DCDAC9300A9DBCE /* React-Native-Webview-Bridge.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "React-Native-Webview-Bridge.xcodeproj"; path = "../node_modules/react-native-webview-bridge/ios/React-Native-Webview-Bridge.xcodeproj"; sourceTree = "<group>"; };
 		89FDAA1A1DC46970007C1C23 /* RCTMapboxGL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTMapboxGL.xcodeproj; path = "../node_modules/react-native-mapbox-gl/ios/RCTMapboxGL.xcodeproj"; sourceTree = "<group>"; };
 		89FDAA421DC46A12007C1C23 /* Mapbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Mapbox.framework; sourceTree = "<group>"; };
 		9AF7092E89054EE282FEC6DC /* DecoRideShareDemo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = DecoRideShareDemo.xcodeproj; path = "../node_modules/deco-ride-share-demo/ios/DecoRideShareDemo.xcodeproj"; sourceTree = "<group>"; };
@@ -258,6 +267,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89D7410E1DCDAD2C00A9DBCE /* libReact-Native-Webview-Bridge.a in Frameworks */,
 				89FDAA481DC46B1A007C1C23 /* libRCTMapboxGL.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -390,6 +400,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				89D740F11DCDAC9300A9DBCE /* React-Native-Webview-Bridge.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
 				00C302B51ABCB90400DB3ED1 /* RCTGeolocation.xcodeproj */,
@@ -452,6 +463,14 @@
 			children = (
 				89699B491DCA804000FE5BB7 /* DecoRideShareDemo.app */,
 				89699B4B1DCA804000FE5BB7 /* DecoRideShareDemoTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		89D740F21DCDAC9300A9DBCE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				89D7410B1DCDAC9400A9DBCE /* libReact-Native-Webview-Bridge.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -586,6 +605,10 @@
 					ProjectRef = 139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */;
 				},
 				{
+					ProductGroup = 89D740F21DCDAC9300A9DBCE /* Products */;
+					ProjectRef = 89D740F11DCDAC9300A9DBCE /* React-Native-Webview-Bridge.xcodeproj */;
+				},
+				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
@@ -695,6 +718,13 @@
 			fileType = wrapper.cfbundle;
 			path = RCTMapboxGLTests.xctest;
 			remoteRef = 89699B581DCA804000FE5BB7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		89D7410B1DCDAC9400A9DBCE /* libReact-Native-Webview-Bridge.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libReact-Native-Webview-Bridge.a";
+			remoteRef = 89D7410A1DCDAC9400A9DBCE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		89FDAA221DC46971007C1C23 /* libRCTImage-tvOS.a */ = {
