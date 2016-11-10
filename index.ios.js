@@ -5,7 +5,6 @@ import {
     Text,
     View
 } from 'react-native'
-import Map from './src/common/components/map'
-var Sample2 = require('./app');
+var mapView = require('./src/common/components/map');
 
-AppRegistry.registerComponent('AccessMap', () => Sample2);
+AppRegistry.registerComponent('AccessMap', () => mapView);

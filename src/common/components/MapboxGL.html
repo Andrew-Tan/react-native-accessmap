@@ -6,25 +6,6 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.26.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.26.0/mapbox-gl.css' rel='stylesheet' />
-    <script>
-        (function () {
-            if (WebViewBridge) {
-                WebViewBridge.onMessage = function (message) {
-                    if (message === "hello from react-native") {
-                        WebViewBridge.send("got the message inside webview");
-                    }
-                    if (message === "test") {
-                        map.flyTo({
-                            center: [
-                                -122.3125913,
-                                47.6636329]
-                        });
-                    }
-                };
-                WebViewBridge.send("hello from webview");
-            }
-        }())
-    </script>
     <style>
         body { margin:0; padding:0; }
         #map { position:absolute; top:0; bottom:0; width:100%; }
@@ -50,7 +31,6 @@
 </style>
 <div id='map'></div>
 <br/>
-<button id='fly'>Fly</button>
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiYml0bG9ja2VyIiwiYSI6ImNpdWVxdzQ2ZjAwY2oyeXJ1ZHBnOHg4ZGcifQ.k1PUnopcHUTI4vcuP1qvkg';
     var map = new mapboxgl.Map({
@@ -58,16 +38,6 @@
         style: 'mapbox://styles/mapbox/light-v9',
         center: [-122.314219, 47.660723],
         zoom: 12
-    });
-
-    document.getElementById('fly').addEventListener('click', function () {
-        // Fly to a random location by offsetting the point -74.50, 40
-        // by up to 5 degrees.
-        map.flyTo({
-            center: [
-                -122.314219 + (Math.random() - 0.5) * 10,
-                47.660723 + (Math.random() - 0.5) * 10]
-        });
     });
 </script>
 
