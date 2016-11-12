@@ -15,31 +15,9 @@ import {
     TouchableHighlight,
     StatusBar
 } from 'react-native'
-
+import { mainScript } from '../actions/mapScript'
+import { get_route } from '../actions/route'
 var WebViewBridge = require('react-native-webview-bridge');
-
-const injectScript = `
-(function htmlScript() {
-    if (WebViewBridge) {
-        WebViewBridge.onMessage = function (message) {
-            // Converts the payload in JSON format.
-            var jsonData = JSON.parse(message);
-            switch (jsonData.func) {
-                case "test":
-                    map.flyTo({
-                        center: [
-                            jsonData.args[0],
-                            jsonData.args[1]
-                        ]
-                    });
-                    break;
-                default:
-                    break;
-            }
-        };
-    }
-}());
-`;
 
 var mapView = React.createClass({
     onBridgeMessage: function (message) {
@@ -57,7 +35,7 @@ var mapView = React.createClass({
 
     testSend: function () {
         var json = {
-            "func": "test",
+            "func": "flyTo",
             "args": [
                 -122.3125913,
                 47.6636329
@@ -67,8 +45,37 @@ var mapView = React.createClass({
         this.refs.webviewbridge.sendToBridge(JSON.stringify(json));
     },
 
+    drawRoute: function (geojson) {
+        var json_add = {
+            "func": "addGeoJSON",
+            "args": [
+                // annotation id
+                "route",
+                // annotation type
+                "line",
+                // annotation
+                geojson
+            ]
+        };
+
+        this.refs.webviewbridge.sendToBridge(JSON.stringify(json_add));
+    },
+
+    removeRoute: function () {
+        var json = {
+            "func": "removeGeoJSON",
+            "args": [
+                // annotation id
+                "route"
+            ]
+        };
+
+        this.refs.webviewbridge.sendToBridge(JSON.stringify(json));
+    },
+
     render: function () {
         StatusBar.setHidden(true);
+        console.log("(" + mainScript.toString() + "())");
         return (
             <View style={styles.container}>
                 <ScrollView style={styles.scrollView}>
@@ -76,9 +83,18 @@ var mapView = React.createClass({
                         activeOpacity={50}
                         underlayColor={'#00008b'}
                         style={styles.button}
-                        onPress={() => this.testSend()}>
+                        onPress={() => get_route([47.663593, -122.313823], [47.662437,-122.316162], this.drawRoute)}>
                         <View>
                             <Text style={styles.button_text}>Draw Route</Text>
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight
+                        activeOpacity={50}
+                        underlayColor={'#00008b'}
+                        style={styles.button}
+                        onPress={() => this.removeRoute()}>
+                        <View>
+                            <Text style={styles.button_text}>Remove Route</Text>
                         </View>
                     </TouchableHighlight>
                 </ScrollView>
@@ -87,7 +103,7 @@ var mapView = React.createClass({
                         ref="webviewbridge"
                         onBridgeMessage={this.onBridgeMessage}
                         javaScriptEnabled={true}
-                        injectedJavaScript={injectScript}
+                        injectedJavaScript={"(" + mainScript.toString() + "())"}
                         source={require('./MapboxGL.html')}/>
                 </View>
             </View>

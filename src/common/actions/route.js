@@ -20,13 +20,21 @@ export var get_route = (origin, destination, callback) => {
             // request success
             var response_json = JSON.parse(request.responseText);
 
-            var route_annotation = json_to_annotation(response_json);
+            var geojson = {
+                "type": "FeatureCollection",
+                "features": [{
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": response_json.routes[0].geometry
+                }]
+            };
 
-            callback(route_annotation);
+            callback(geojson);
         }
     }
 };
 
+/*
 var json_to_annotation = (json) => {
     var route_coordinates = json.routes[0].geometry.coordinates;
 
@@ -42,4 +50,4 @@ var json_to_annotation = (json) => {
         strokeAlpha: .5,
         id: 'route'
     };
-};
+};*/
