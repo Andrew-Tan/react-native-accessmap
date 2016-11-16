@@ -20,16 +20,7 @@ export var get_route = (origin, destination, callback) => {
             // request success
             var response_json = JSON.parse(request.responseText);
 
-            var geojson = {
-                "type": "FeatureCollection",
-                "features": [{
-                    "type": "Feature",
-                    "properties": {},
-                    "geometry": response_json.routes[0].geometry
-                }]
-            };
-
-            callback(geojson);
+            callback(response_json.routes[0].geometry);
         }
     }
 };

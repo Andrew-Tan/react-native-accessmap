@@ -13,13 +13,18 @@ import {
     ScrollView,
     Touchable,
     TouchableHighlight,
-    StatusBar
+    StatusBar,
+    TextInput
 } from 'react-native'
 import { mainScript } from '../actions/mapScript'
 import { get_route } from '../actions/route'
 var WebViewBridge = require('react-native-webview-bridge');
 
 var mapView = React.createClass({
+    state: {
+
+    },
+
     onBridgeMessage: function (message) {
         const {webviewbridge} = this.refs;
 
@@ -33,20 +38,17 @@ var mapView = React.createClass({
         }
     },
 
-    testSend: function () {
-        var json = {
-            "func": "flyTo",
-            "args": [
-                -122.3125913,
-                47.6636329
-            ]
+    drawRoute: function (geometry) {
+        let geojson = {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "properties": {},
+                "geometry": geometry
+            }]
         };
-        
-        this.refs.webviewbridge.sendToBridge(JSON.stringify(json));
-    },
 
-    drawRoute: function (geojson) {
-        var json_add = {
+        let json_add = {
             "func": "addGeoJSON",
             "args": [
                 // annotation id
@@ -59,10 +61,51 @@ var mapView = React.createClass({
         };
 
         this.refs.webviewbridge.sendToBridge(JSON.stringify(json_add));
+
+        let min_longitude = 500;
+        let min_latitude = 500;
+        let max_longitude = -500;
+        let max_latitude = -500;
+        geometry.coordinates.forEach(function (point) {
+            if (point[1] < min_latitude) {
+                min_latitude = point[1];
+            }
+
+            if (point[1] > max_latitude) {
+                max_latitude = point[1];
+            }
+
+            if (point[0] < min_longitude) {
+                min_longitude = point[0];
+            }
+
+            if (point[0] > max_longitude) {
+                max_longitude = point[0];
+            }
+        });
+        let LngLatBound = [
+            [
+                min_longitude,
+                min_latitude
+            ],
+            [
+                max_longitude,
+                max_latitude
+            ]
+        ];
+
+        let json_display = {
+            "func": "fitBounds",
+            "args": [
+                LngLatBound
+            ]
+        };
+
+        this.refs.webviewbridge.sendToBridge(JSON.stringify(json_display));
     },
 
     removeRoute: function () {
-        var json = {
+        let json = {
             "func": "removeGeoJSON",
             "args": [
                 // annotation id
@@ -74,16 +117,25 @@ var mapView = React.createClass({
     },
 
     render: function () {
-        StatusBar.setHidden(true);
+        // StatusBar.setHidden(true);
         console.log("(" + mainScript.toString() + "())");
         return (
             <View style={styles.container}>
+                <StatusBar
+                    hidden={false}
+                    backgroundColor="blue"
+                    barStyle="light-content"
+                />
+                <TextInput
+                    style={{height: 40}}
+                    placeholder="Type here to translate!"
+                />
                 <ScrollView style={styles.scrollView}>
                     <TouchableHighlight
                         activeOpacity={50}
                         underlayColor={'#00008b'}
                         style={styles.button}
-                        onPress={() => get_route([47.663593, -122.313823], [47.662437,-122.316162], this.drawRoute)}>
+                        onPress={() => get_route([47.665490, -122.314471], [47.666902, -122.307375], this.drawRoute)}>
                         <View>
                             <Text style={styles.button_text}>Draw Route</Text>
                         </View>

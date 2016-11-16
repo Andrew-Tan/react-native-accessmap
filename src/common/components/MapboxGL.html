@@ -40,127 +40,25 @@
 </style>
 <div id='map'></div>
 <br/>
-<button id='fly'>Add a Line</button>
+<button id='fly'>FitBounds</button>
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiYml0bG9ja2VyIiwiYSI6ImNpdWVxdzQ2ZjAwY2oyeXJ1ZHBnOHg4ZGcifQ.k1PUnopcHUTI4vcuP1qvkg';
     var map = new mapboxgl.Map({
         attributionControl: false,
         container: 'map',
-        style: 'mapbox://styles/mapbox/light-v9',
+        style: 'mapbox://styles/mapbox/streets-v9',
         center: [-122.314219, 47.660723],
         zoom: 12
     });
 
     document.getElementById('fly').addEventListener('click', function () {
-        map.addSource('route', {
-            type: 'geojson',
-            data: {
-                "type": "FeatureCollection",
-                "features": [{
-                    "type": "Feature",
-                    "properties": {},
-                    "geometry": {
-                        "coordinates": [
-                            [
-                                -122.313823,
-                                47.663593
-                            ],
-                            [
-                                -122.3141212,
-                                47.663177
-                            ],
-                            [
-                                -122.3132623,
-                                47.663171
-                            ],
-                            [
-                                -122.3132162,
-                                47.6631707
-                            ],
-                            [
-                                -122.3132162,
-                                47.6631707
-                            ],
-                            [
-                                -122.3132186,
-                                47.6630145
-                            ],
-                            [
-                                -122.3132186,
-                                47.6630145
-                            ],
-                            [
-                                -122.3132647,
-                                47.6630148
-                            ],
-                            [
-                                -122.3141041,
-                                47.6630206
-                            ],
-                            [
-                                -122.3141041,
-                                47.6630206
-                            ],
-                            [
-                                -122.3143374,
-                                47.6630235
-                            ],
-                            [
-                                -122.3143374,
-                                47.6630235
-                            ],
-                            [
-                                -122.3144004,
-                                47.6630239
-                            ],
-                            [
-                                -122.3151222,
-                                47.6630282
-                            ],
-                            [
-                                -122.3151222,
-                                47.6630282
-                            ],
-                            [
-                                -122.3153985,
-                                47.6630229
-                            ],
-                            [
-                                -122.3153985,
-                                47.6630229
-                            ],
-                            [
-                                -122.3154295,
-                                47.6630231
-                            ],
-                            [
-                                -122.3162408,
-                                47.6630275
-                            ],
-                            [
-                                -122.316162,
-                                47.662437
-                            ]
-                        ],
-                        "type": "LineString"
-                    }
-                }]
-            }
-        });
-        map.addLayer({
-            "id": "route",
-            "type": "line",
-            "source": "route",
-            "source-layer": "contour",
-            "layout": {
-                "line-join": "round",
-                "line-cap": "round"
-            },
-            "paint": {
-                "line-color": "#ff69b4",
-                "line-width": 5
-            }
-        });
+        map.fitBounds([[
+            -122.313952,
+            47.666967
+        ], [
+            -122.309768,
+            47.668715
+        ]]);
     });
 </script>
 </body>

@@ -1,6 +1,7 @@
 'use strict';
 
 export var mainScript = function () {
+    // Register WebView Bridge
     if (WebViewBridge) {
         WebViewBridge.onMessage = function (message) {
             // Converts the payload in JSON format.
@@ -43,6 +44,11 @@ export var mainScript = function () {
                     if (map.getSource(jsonData.args[0]) != undefined) {
                         map.removeSource(jsonData.args[0])
                     }
+                    break;
+                case "fitBounds":
+                    map.fitBounds(jsonData.args[0], {
+                        padding: 15
+                    });
                     break;
                 default:
                     break;
