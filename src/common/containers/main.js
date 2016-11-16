@@ -4,40 +4,11 @@ const Menu = require('./menu');
 const {
     View,
     Text,
-    StyleSheet
+    StyleSheet,
+    StatusBar
 } = require('react-native');
-var mapView = require('../components/map');
-
-class ContentView extends Component {
-    render() {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.welcome}>
-                    Welcome to React Native!
-                </Text>
-                <Text style={styles.instructions}>
-                    To get started, edit index.ios.js
-                </Text>
-                <Text style={styles.instructions}>
-                    Press Cmd+R to reload,{'\n'}
-                    Cmd+Control+Z for dev menu
-                </Text>
-            </View>
-        );
-    }
-}
-
-export default class Application extends Component {
-    render() {
-        const menu = <Menu navigator={navigator}/>;
-
-        return (
-            <SideMenu menu={menu}>
-                <mapView/>
-            </SideMenu>
-        );
-    }
-}
+// import MapView from '../components/map'
+import MapView from '../components/map'
 
 const styles = StyleSheet.create({
     button: {
@@ -67,3 +38,23 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
 });
+
+export default class Application extends Component {
+    render() {
+        const menu = <Menu navigator={navigator}/>;
+        return (
+            <SideMenu
+                menu={menu}
+                openMenuOffset={300}>
+                <StatusBar
+                    hidden={false}
+                    backgroundColor="blue"
+                    barStyle="dark-content"
+                />
+                <MapView
+                    onItemSelected={() => {return null}}
+                />
+            </SideMenu>
+        );
+    }
+}

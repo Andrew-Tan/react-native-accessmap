@@ -13,14 +13,13 @@ import {
     ScrollView,
     Touchable,
     TouchableHighlight,
-    StatusBar,
     TextInput
 } from 'react-native'
 import { mainScript } from '../actions/mapScript'
 import { get_route } from '../actions/route'
-var WebViewBridge = require('react-native-webview-bridge');
+let WebViewBridge = require('react-native-webview-bridge');
 
-var mapView = React.createClass({
+let MapView = React.createClass({
     state: {
 
     },
@@ -121,15 +120,6 @@ var mapView = React.createClass({
         console.log("(" + mainScript.toString() + "())");
         return (
             <View style={styles.container}>
-                <StatusBar
-                    hidden={false}
-                    backgroundColor="blue"
-                    barStyle="light-content"
-                />
-                <TextInput
-                    style={{height: 40}}
-                    placeholder="Type here to translate!"
-                />
                 <ScrollView style={styles.scrollView}>
                     <TouchableHighlight
                         activeOpacity={50}
@@ -163,7 +153,7 @@ var mapView = React.createClass({
     }
 });
 
-module.exports = mapView;
+module.exports = MapView;
 
 const styles = StyleSheet.create({
     container: {
@@ -187,6 +177,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#6495ed',
     },
     scrollView: {
-        flex: 1
+        flex: 1,
+        padding: 20
     }
 });
