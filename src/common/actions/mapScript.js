@@ -16,39 +16,43 @@ export var mainScript = function () {
                     });
                     break;
                 case "addGeoJSON":
+                    if (map.getLayer(jsonData.args[0]) != undefined) {
+                        map.removeLayer(jsonData.args[0]);
+                        map.removeSource(jsonData.args[0]);
+                    }
                     map.addSource(jsonData.args[0], {
                         type: 'geojson',
                         data: jsonData.args[2]
                     });
-
                     map.addLayer({
                         "id": jsonData.args[0],
                         "type": jsonData.args[1],
                         "source": jsonData.args[0],
-                        "source-layer": "contour",
                         "layout": {
                             "line-join": "round",
                             "line-cap": "round"
                         },
                         "paint": {
-                            "line-color": "#ff69b4",
+                            "line-color": "#00ff00",
                             "line-width": 5
                         }
                     });
                     break;
                 case "removeGeoJSON":
-                    if (map.getLayer(jsonData.args[0]) != undefined) {
-                        map.removeLayer(jsonData.args[0])
-                    }
-
-                    if (map.getSource(jsonData.args[0]) != undefined) {
-                        map.removeSource(jsonData.args[0])
-                    }
+                    map.removeLayer(jsonData.args[0]);
+                    map.removeSource(jsonData.args[0]);
                     break;
                 case "fitBounds":
                     map.fitBounds(jsonData.args[0], {
-                        padding: 15
+                        padding: 60
                     });
+                    break;
+                case "getCenterCoordinate":
+                    let jsonToReturn = {
+                        "func": "mapCenter",
+                        "args":[map.getCenter()]
+                    };
+                    WebViewBridge.send(JSON.stringify(jsonToReturn));
                     break;
                 default:
                     break;

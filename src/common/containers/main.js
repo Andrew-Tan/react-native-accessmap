@@ -1,60 +1,35 @@
-const SideMenu = require('react-native-side-menu');
-import React, {Component} from 'react';
-const Menu = require('./menu');
-const {
-    View,
-    Text,
-    StyleSheet,
-    StatusBar
-} = require('react-native');
-// import MapView from '../components/map'
+import React, { Component } from 'react';
+import { Router, Scene } from 'react-native-router-flux';
+
+import DrawerScene from './Drawer';
 import MapView from '../components/map'
 
-const styles = StyleSheet.create({
-    button: {
-        position: 'absolute',
-        top: 20,
-        padding: 10,
-    },
-    caption: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        alignItems: 'center',
-    },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5,
-    },
-});
+export default class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            getRoute: []
+        }
+    }
 
-export default class Application extends Component {
+    getRoute(orig, dest) {
+        this.state.getRoute(orig, dest);
+    }
+
+    setGEtRouteFunc(func) {
+        this.state.getRoute = func
+    }
+
     render() {
-        const menu = <Menu navigator={navigator}/>;
         return (
-            <SideMenu
-                menu={menu}
-                openMenuOffset={300}>
-                <StatusBar
-                    hidden={false}
-                    backgroundColor="blue"
-                    barStyle="dark-content"
-                />
-                <MapView
-                    onItemSelected={() => {return null}}
-                />
-            </SideMenu>
-        );
+            <Router>
+                <Scene key="root">
+                    <Scene key="drawer" component={DrawerScene} open={false} getRoute={this.getRoute.bind(this)} >
+                        <Scene key="main" component={MapView} initial={true} routeFunc={this.setGEtRouteFunc.bind(this)} >
+                        </Scene>
+                    </Scene>
+                </Scene>
+            </Router>
+        )
     }
 }

@@ -4,8 +4,8 @@
     <meta charset='utf-8'/>
     <title></title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.26.0/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.26.0/mapbox-gl.css' rel='stylesheet'/>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.28.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.28.0/mapbox-gl.css' rel='stylesheet'/>
     <style>
         body {
             margin: 0;
@@ -22,36 +22,34 @@
 </head>
 <body>
 
-<style>
-    #fly {
-        display: block;
-        position: relative;
-        margin: 0px auto;
-        width: 50%;
-        height: 40px;
-        padding: 10px;
-        border: none;
-        border-radius: 3px;
-        font-size: 12px;
-        text-align: center;
-        color: #fff;
-        background: #ee8a65;
-    }
-</style>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.0/mapbox-gl-geocoder.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.0/mapbox-gl-geocoder.css' type='text/css' />
+
 <div id='map'></div>
 <br/>
-<button id='fly'>FitBounds</button>
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiYml0bG9ja2VyIiwiYSI6ImNpdWVxdzQ2ZjAwY2oyeXJ1ZHBnOHg4ZGcifQ.k1PUnopcHUTI4vcuP1qvkg';
     var map = new mapboxgl.Map({
         attributionControl: false,
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v9',
-        center: [-122.314219, 47.660723],
-        zoom: 12
+        center: [-122.3078151, 47.6538109],
+        zoom: 15
     });
 
-    document.getElementById('fly').addEventListener('click', function () {
+    map.addControl(new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken
+    }));
+
+    map.on('moveend', function (e) {
+        var center = map.getCenter();
+        var jsonToReturn = {
+            "func": "mapCenter",
+            "args": [center]
+        };
+        WebViewBridge.send(JSON.stringify(jsonToReturn));
+    });
+/*    document.getElementById('fly').addEventListener('click', function () {
         map.fitBounds([[
             -122.313952,
             47.666967
@@ -60,6 +58,9 @@
             47.668715
         ]]);
     });
+
+ <button id='fly'>FitBounds</button>
+    */
 </script>
 </body>
 </html>

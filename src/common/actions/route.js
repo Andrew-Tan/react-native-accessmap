@@ -2,7 +2,7 @@
 
 import {routing_api} from '../api';
 
-export var get_route = (origin, destination, callback) => {
+export let get_route = (origin, destination, callback) => {
     const ori_lat = origin[0];
     const ori_lon = origin[1];
     const des_lat = destination[0];
@@ -10,7 +10,7 @@ export var get_route = (origin, destination, callback) => {
 
     const api_url = routing_api + '?waypoints=[' + ori_lat + ',' + ori_lon + ',' + des_lat + ',' + des_lon + ']';
 
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
     request.addEventListener("readystatechange", process_route_request, false);
     request.open('GET', api_url, true);
     request.send( null );
@@ -18,9 +18,14 @@ export var get_route = (origin, destination, callback) => {
     function process_route_request() {
         if (request.readyState == 4 && request.status == 200) {
             // request success
-            var response_json = JSON.parse(request.responseText);
+            let response_json = JSON.parse(request.responseText);
+            let route = response_json.routes;
+            if (route[0] != undefined) {
+                callback(route[0].geometry);
+            } else {
+                console.log("No route found!");
+            }
 
-            callback(response_json.routes[0].geometry);
         }
     }
 };

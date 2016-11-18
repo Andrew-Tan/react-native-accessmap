@@ -7,7 +7,8 @@ const {
     Image,
     Text,
     TextInput,
-    TouchableHighlight
+    TouchableOpacity,
+    Linking
 } = require('react-native');
 const { Component } = React;
 
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
         top: 20,
     },
     item: {
-        fontSize: 14,
+        fontSize: 25,
         fontWeight: '300',
         paddingTop: 5,
     },
@@ -54,6 +55,11 @@ const styles = StyleSheet.create({
         marginLeft: 0,
         marginRight: 80,
         backgroundColor: '#6495ed',
+    },
+    button_text: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: '300',
     },
     textInput: {
         height: 40,
@@ -71,8 +77,55 @@ const styles = StyleSheet.create({
 
 module.exports = class Menu extends Component {
     static propTypes = {
-        onItemSelected: React.PropTypes.func.isRequired,
+        drawRoute: React.PropTypes.func.isRequired
     };
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            origin: -500,
+            destination: -500
+        };
+    }
+
+    onLinkSelected(instruction) {
+        console.log("InstructionReceived: " + instruction);
+        let url = 'https://www.accessmapseattle.com/';
+        switch (instruction) {
+            case 'About':
+                url = 'https://www.accessmapseattle.com/about';
+                break;
+            case 'Contacts':
+                url = 'mailto:developers@accessmapseattle.com';
+                break;
+            default:
+                break;
+        }
+
+        Linking.openURL(url).catch(err => console.error('An error occurred', err));
+    }
+
+    parseCoordinate(text) {
+        let coordinate = text.split(",");
+        console.log("Coordinate: " + coordinate[0] + " | " + coordinate[1]);
+        return [parseFloat(coordinate[0]), parseFloat(coordinate[1])];
+    }
+
+    getRoute(from_coord) {
+        if (!from_coord) {
+            this.props.drawRoute(null, null);
+            return;
+        }
+
+        if (this.state.origin == -500 || this.state.destination == -500) {
+            return;
+        }
+
+        let origin = this.parseCoordinate(this.state.origin);
+        let destination = this.parseCoordinate(this.state.destination);
+
+        this.props.drawRoute(origin, destination)
+    }
 
     render() {
         return (
@@ -88,33 +141,46 @@ module.exports = class Menu extends Component {
                     style={styles.textInput}
                     placeholder="Origin..."
                     autoCorrect={false}
-                    autoCapitalize={'none'}/>
+                    autoCapitalize={'none'}
+                    onChangeText={(text) => this.state.origin = text}
+                />
 
                 <TextInput
                     style={styles.textInput}
                     placeholder="Destination..."
                     autoCorrect={false}
-                    autoCapitalize={'none'}/>
+                    autoCapitalize={'none'}
+                    onChangeText={(text) => this.state.destination = text}
+                />
 
-                <TouchableHighlight
-                    activeOpacity={50}
-                    underlayColor={'#00008b'}
+                <TouchableOpacity
+                    activeOpacity={0.5}
                     style={styles.button}
-                    // onPress={() => this.removeRoute()}
+                    onPress={() => this.getRoute()}
                     >
                     <View>
                         <Text style={styles.button_text}>Draw Route</Text>
                     </View>
-                </TouchableHighlight>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    activeOpacity={0.5}
+                    style={styles.button}
+                    onPress={() => this.getRoute()}
+                >
+                    <View>
+                        <Text style={styles.button_text}>Fast Draw</Text>
+                    </View>
+                </TouchableOpacity>
 
                 <Text
-                    onPress={() => this.props.onItemSelected('About')}
+                    onPress={() => this.onLinkSelected('About')}
                     style={styles.item}>
                     About
                 </Text>
 
                 <Text
-                    onPress={() => this.props.onItemSelected('Contacts')}
+                    onPress={() => this.onLinkSelected('Contacts')}
                     style={styles.item}>
                     Contacts
                 </Text>

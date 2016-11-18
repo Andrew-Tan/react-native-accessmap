@@ -13,23 +13,48 @@ import {
     ScrollView,
     Touchable,
     TouchableHighlight,
-    TextInput
+    TextInput,
+    Image,
+    TouchableOpacity
 } from 'react-native'
-import { mainScript } from '../actions/mapScript'
-import { get_route } from '../actions/route'
+import {mainScript} from '../actions/mapScript'
+import {get_route} from '../actions/route'
 let WebViewBridge = require('react-native-webview-bridge');
 
-let MapView = React.createClass({
-    state: {
+import {Actions} from 'react-native-router-flux';
 
+let MapView = React.createClass({
+    getInitialState: function() {
+        return {
+            mapCenter: {lat: 47.6553351,lng: -122.3057086},
+            lastPosition: null,
+            watchID: null,
+        };
+    },
+
+    printState: function () {
+        console.log("\n\nMapCenter Received: " + this.state.mapCenter.lng + " | " + this.state.mapCenter.lat);
+        console.log("\n\nLast Pos: " + this.state.lastPosition.coords.longitude + " | " + this.state.lastPosition.coords.latitude)
+    },
+
+    componentDidMount: function () {
+        this.watchID = navigator.geolocation.watchPosition((position) => {
+            this.setState({lastPosition: position});
+        });
+    },
+
+    componentWillUnmount: function () {
+        navigator.geolocation.clearWatch(this.state.watchID);
     },
 
     onBridgeMessage: function (message) {
         const {webviewbridge} = this.refs;
 
-        switch (message) {
-            case "hello from webview":
-                webviewbridge.sendToBridge("hello from react-native");
+        let jsonData = JSON.parse(message);
+        switch (jsonData.func) {
+            case "mapCenter":
+                let center = jsonData.args[0];
+                this.setState({mapCenter: center});
                 break;
             case "got the message inside webview":
                 console.log("we have got a message from webview! yeah!!");
@@ -39,12 +64,9 @@ let MapView = React.createClass({
 
     drawRoute: function (geometry) {
         let geojson = {
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "properties": {},
-                "geometry": geometry
-            }]
+            "type": "Feature",
+            "properties": {},
+            "geometry": geometry
         };
 
         let json_add = {
@@ -107,7 +129,6 @@ let MapView = React.createClass({
         let json = {
             "func": "removeGeoJSON",
             "args": [
-                // annotation id
                 "route"
             ]
         };
@@ -115,12 +136,46 @@ let MapView = React.createClass({
         this.refs.webviewbridge.sendToBridge(JSON.stringify(json));
     },
 
+    getRouteByCoordinate: function (origin, destination) {
+        Actions.refresh({key: 'drawer', open: value => false});
+
+        if (origin == null || destination == null) {
+            console.log("\n\n\nFrom current pos and map center!\n\n\n")
+            let currentPos = this.state.lastPosition.coords;
+            get_route(
+                [currentPos.latitude, currentPos.longitude],
+                [this.state.mapCenter.lat, this.state.mapCenter.lng],
+                this.drawRoute
+            );
+        } else {
+            get_route(origin, destination, this.drawRoute);
+        }
+    },
+
     render: function () {
         // StatusBar.setHidden(true);
-        console.log("(" + mainScript.toString() + "())");
+        this.props.routeFunc(this.getRouteByCoordinate.bind(this));
         return (
             <View style={styles.container}>
+                <View style={styles.top_padding} />
+                <View style={styles.map}>
+                    <WebViewBridge
+                        ref="webviewbridge"
+                        onBridgeMessage={this.onBridgeMessage}
+                        javaScriptEnabled={true}
+                        injectedJavaScript={"(" + mainScript.toString() + "())"}
+                        source={require('./MapboxGL.html')}/>
+                </View>
                 <ScrollView style={styles.scrollView}>
+                    <TouchableHighlight
+                        activeOpacity={50}
+                        underlayColor={'#00008b'}
+                        style={styles.button}
+                        onPress={() => this.printState()}>
+                        <View>
+                            <Text style={styles.button_text}>Print State</Text>
+                        </View>
+                    </TouchableHighlight>
                     <TouchableHighlight
                         activeOpacity={50}
                         underlayColor={'#00008b'}
@@ -140,14 +195,17 @@ let MapView = React.createClass({
                         </View>
                     </TouchableHighlight>
                 </ScrollView>
-                <View style={styles.map}>
-                    <WebViewBridge
-                        ref="webviewbridge"
-                        onBridgeMessage={this.onBridgeMessage}
-                        javaScriptEnabled={true}
-                        injectedJavaScript={"(" + mainScript.toString() + "())"}
-                        source={require('./MapboxGL.html')}/>
-                </View>
+                <TouchableOpacity
+                    activeOpacity={0.2}
+                    style={styles.overlay_button}
+                    onPress={() => Actions.refresh({key: 'drawer', open: value => !value})}>
+                    <View>
+                        <Image
+                            style={{width: 50, height: 50}}
+                            source={require('../menu_icon.png')}
+                        />
+                    </View>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -162,7 +220,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0f8ff'
     },
     map: {
-        flex: 2
+        flex: 10
     },
     button: {
         alignItems: 'center',
@@ -179,5 +237,28 @@ const styles = StyleSheet.create({
     scrollView: {
         flex: 1,
         padding: 20
+    },
+    overlay_button: {
+        position: 'absolute',
+        top: 20,
+        bottom: 0,
+        left: 10,
+        right: 0,
+        width: 50,
+        height: 50,
+        alignItems: 'center',
+        // borderWidth: 1,
+        borderRadius: 10,
+        paddingTop: 10,
+        paddingBottom: 10,
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 5,
+        marginRight: 5,
+        // backgroundColor: '#6495ed',
+    },
+    top_padding: {
+        paddingTop: 20,
+        backgroundColor: 'white'
     }
 });
