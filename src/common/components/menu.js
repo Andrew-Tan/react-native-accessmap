@@ -8,7 +8,8 @@ const {
     Text,
     TextInput,
     TouchableOpacity,
-    Linking
+    Linking,
+    Switch
 } = require('react-native');
 const { Component } = React;
 
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
 
 module.exports = class Menu extends Component {
     static propTypes = {
-        drawRoute: React.PropTypes.func.isRequired
+        mapFunc: React.PropTypes.func.isRequired
     };
 
     constructor(props) {
@@ -113,7 +114,10 @@ module.exports = class Menu extends Component {
 
     getRoute(from_coord) {
         if (!from_coord) {
-            this.props.drawRoute(null, null);
+            this.props.mapFunc({
+                "func": "getRouteByCoordinate",
+                "args": [null, null]
+            });
             return;
         }
 
@@ -124,7 +128,28 @@ module.exports = class Menu extends Component {
         let origin = this.parseCoordinate(this.state.origin);
         let destination = this.parseCoordinate(this.state.destination);
 
-        this.props.drawRoute(origin, destination)
+        this.props.mapFunc({
+            "func": "getRouteByCoordinate",
+            "args": [origin, destination]
+        });
+    }
+
+    toggleMapSwitch(id, value) {
+        this.props.mapFunc({
+            "func": "setVisibility",
+            "args": [id, value]
+        });
+
+        switch (id) {
+            case "sidewalks":
+                this.setState({sidewalksVisibility: value});
+                break;
+            case "crossings":
+                this.setState({crossingsVisibility: value});
+                break;
+            default:
+                break;
+        }
     }
 
     render() {
@@ -136,6 +161,16 @@ module.exports = class Menu extends Component {
                         source={{ uri, }}/>
                     <Text style={styles.name}>Login to AccessMap</Text>
                 </View>
+
+                <Switch
+                    onValueChange={(value) => this.toggleMapSwitch("sidewalks", value)}
+                    style={{marginBottom: 10}}
+                    value={this.state.sidewalksVisibility} />
+
+                <Switch
+                    onValueChange={(value) => this.toggleMapSwitch("crossings", value)}
+                    style={{marginBottom: 10}}
+                    value={this.state.crossingsVisibility} />
 
                 <TextInput
                     style={styles.textInput}
@@ -156,8 +191,7 @@ module.exports = class Menu extends Component {
                 <TouchableOpacity
                     activeOpacity={0.5}
                     style={styles.button}
-                    onPress={() => this.getRoute()}
-                    >
+                    onPress={() => this.getRoute()} >
                     <View>
                         <Text style={styles.button_text}>Draw Route</Text>
                     </View>
@@ -166,10 +200,20 @@ module.exports = class Menu extends Component {
                 <TouchableOpacity
                     activeOpacity={0.5}
                     style={styles.button}
-                    onPress={() => this.getRoute()}
-                >
+                    onPress={() => this.getRoute(false)} >
                     <View>
                         <Text style={styles.button_text}>Fast Draw</Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    activeOpacity={0.5}
+                    style={styles.button}
+                    onPress={() => this.props.mapFunc({
+                        "func": "removeRoute"
+                    })} >
+                    <View>
+                        <Text style={styles.button_text}>Remove Route</Text>
                     </View>
                 </TouchableOpacity>
 

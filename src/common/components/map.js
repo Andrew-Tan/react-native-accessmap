@@ -30,14 +30,26 @@ let MapView = React.createClass({
             mapCenter: {lat: 47.6553351,lng: -122.3057086},
             lastPosition: null,
             watchID: null,
-            sidewalksVisibility: true,
-            crossingsVisibility: true
         };
     },
 
-    printState: function () {
-        console.log("\n\nMapCenter Received: " + this.state.mapCenter.lng + " | " + this.state.mapCenter.lat);
-        console.log("\n\nLast Pos: " + this.state.lastPosition.coords.longitude + " | " + this.state.lastPosition.coords.latitude)
+    mapFunctions: function (instruction) {
+        switch (instruction.func) {
+            case "getRouteByCoordinate":
+                Actions.refresh({key: 'drawer', open: value => false});
+                this.getRouteByCoordinate(instruction.args[0], instruction.args[1]);
+                break;
+            case "setVisibility":
+                this.setVisibility(instruction.args[0], instruction.args[1]);
+                break;
+            case "removeRoute":
+                Actions.refresh({key: 'drawer', open: value => false});
+                this.removeRoute();
+                break;
+            default:
+                console.error("Unrecognized Command!");
+                break;
+        }
     },
 
     componentDidMount: function () {
@@ -132,8 +144,6 @@ let MapView = React.createClass({
     },
 
     getRouteByCoordinate: function (origin, destination) {
-        Actions.refresh({key: 'drawer', open: value => false});
-
         if (origin == null || destination == null) {
             console.log("\n\n\nFrom current pos and map center!\n\n\n")
             let currentPos = this.state.lastPosition.coords;
@@ -183,7 +193,7 @@ let MapView = React.createClass({
 
     render: function () {
         // StatusBar.setHidden(true);
-        this.props.routeFunc(this.getRouteByCoordinate.bind(this));
+        this.props.mapFunc(this.mapFunctions.bind(this));
         return (
             <View style={styles.container}>
                 <View style={styles.top_padding} />
@@ -195,43 +205,6 @@ let MapView = React.createClass({
                         injectedJavaScript={"(" + mainScript.toString() + "())"}
                         source={require('./MapboxGL.html')}/>
                 </View>
-                <ScrollView style={styles.scrollView}>
-                    <Switch
-                        onValueChange={(value) => this.setVisibility('sidewalks', value)}
-                        style={{marginBottom: 10}}
-                        value={this.state.sidewalksVisibility} />
-                    <Switch
-                        onValueChange={(value) => this.setVisibility('crossings', value)}
-                        style={{marginBottom: 10}}
-                        value={this.state.crossingsVisibility} />
-                    <TouchableHighlight
-                        activeOpacity={50}
-                        underlayColor={'#00008b'}
-                        style={styles.button}
-                        onPress={() => this.printState()}>
-                        <View>
-                            <Text style={styles.button_text}>Print State</Text>
-                        </View>
-                    </TouchableHighlight>
-                    <TouchableHighlight
-                        activeOpacity={50}
-                        underlayColor={'#00008b'}
-                        style={styles.button}
-                        onPress={() => get_route([47.665490, -122.314471], [47.666902, -122.307375], this.drawRoute)}>
-                        <View>
-                            <Text style={styles.button_text}>Draw Route</Text>
-                        </View>
-                    </TouchableHighlight>
-                    <TouchableHighlight
-                        activeOpacity={50}
-                        underlayColor={'#00008b'}
-                        style={styles.button}
-                        onPress={() => this.removeRoute()}>
-                        <View>
-                            <Text style={styles.button_text}>Remove Route</Text>
-                        </View>
-                    </TouchableHighlight>
-                </ScrollView>
                 <TouchableOpacity
                     activeOpacity={0.2}
                     style={styles.overlay_button}

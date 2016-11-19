@@ -8,7 +8,7 @@ export default class DrawerScene extends Component {
         const state = this.props.navigationState;
         const children = state.children;
         const menu = <Menu
-            drawRoute={this.props.getRoute}
+            mapFunc={this.props.mapFunc}
             navigator={navigator}/>;
         return (
             <Drawer

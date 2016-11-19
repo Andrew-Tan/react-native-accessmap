@@ -8,24 +8,24 @@ export default class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            getRoute: []
+            mapFunc: null
         }
     }
 
-    getRoute(orig, dest) {
-        this.state.getRoute(orig, dest);
+    getMapFunc(instruction) {
+        return this.state.mapFunc(instruction);
     }
 
-    setGEtRouteFunc(func) {
-        this.state.getRoute = func
+    setMapFunc(obj) {
+        this.state.mapFunc = obj;
     }
 
     render() {
         return (
             <Router>
                 <Scene key="root">
-                    <Scene key="drawer" component={DrawerScene} open={false} getRoute={this.getRoute.bind(this)} >
-                        <Scene key="main" component={MapView} initial={true} routeFunc={this.setGEtRouteFunc.bind(this)} >
+                    <Scene key="drawer" component={DrawerScene} open={false} mapFunc={this.getMapFunc.bind(this)} >
+                        <Scene key="main" component={MapView} initial={true} mapFunc={this.setMapFunc.bind(this)} >
                         </Scene>
                     </Scene>
                 </Scene>
