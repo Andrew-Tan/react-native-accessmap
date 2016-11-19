@@ -33,7 +33,7 @@ export var mainScript = function () {
                             "line-cap": "round"
                         },
                         "paint": {
-                            "line-color": "#00ff00",
+                            "line-color": "#FC6399",
                             "line-width": 5
                         }
                     });
@@ -56,6 +56,45 @@ export var mainScript = function () {
                     break;
                 case "setVisibility":
                     map.setLayoutProperty(jsonData.args[0], 'visibility', jsonData.args[1]);
+                    break;
+                case "updateCurrentPosition":
+                    if (map == undefined) {
+                        return;
+                    }
+                    if (map.getSource("curPos") != undefined) {
+                        map.removeLayer("curPos");
+                        map.removeSource("curPos");
+                    }
+
+                    map.addSource("curPos", {
+                        "type": "geojson",
+                        "data": {
+                            "type": "FeatureCollection",
+                            "features": [{
+                                "type": "Feature",
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [jsonData.args[0], jsonData.args[1]]
+                                },
+                                "properties": {
+                                    "title": "Mapbox DC",
+                                    "icon": "monument"
+                                }
+                            }]
+                        }
+                    });
+                    map.addLayer({
+                        "id": "curPos",
+                        "type": "symbol",
+                        "source": "curPos",
+                        "layout": {
+                            "icon-image": "monument-15",
+                            // "text-field": "Current Position",
+                            // "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                            // "text-offset": [0, 0.6],
+                            // "text-anchor": "top"
+                        }
+                    });
                     break;
                 default:
                     break;

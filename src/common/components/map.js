@@ -16,7 +16,8 @@ import {
     TextInput,
     Image,
     TouchableOpacity,
-    Switch
+    Switch,
+    Alert
 } from 'react-native'
 import {mainScript} from '../actions/mapScript'
 import {get_route} from '../actions/route'
@@ -53,8 +54,18 @@ let MapView = React.createClass({
     },
 
     componentDidMount: function () {
-        this.watchID = navigator.geolocation.watchPosition((position) => {
+        this.state.watchID = navigator.geolocation.watchPosition((position) => {
             this.setState({lastPosition: position});
+            this.refs.webviewbridge.sendToBridge(
+                JSON.stringify({
+                "func": "updateCurrentPosition",
+                "args": [
+                    position.coords.longitude,
+                    position.coords.latitude
+                ]}),
+                (error) => alert(JSON.stringify(error)),
+                {enableHighAccuracy: true, timeout: 2000, maximumAge: 1000}
+            );
         });
     },
 
@@ -71,8 +82,8 @@ let MapView = React.createClass({
                 let center = jsonData.args[0];
                 this.setState({mapCenter: center});
                 break;
-            case "got the message inside webview":
-                console.log("we have got a message from webview! yeah!!");
+            default:
+                console.error("Unrecognized Command!");
                 break;
         }
     },

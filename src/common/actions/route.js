@@ -2,6 +2,10 @@
 
 import {routing_api} from '../api';
 
+import {
+    Alert
+} from 'react-native'
+
 export let get_route = (origin, destination, callback) => {
     const ori_lat = origin[0];
     const ori_lon = origin[1];
@@ -21,11 +25,34 @@ export let get_route = (origin, destination, callback) => {
             let response_json = JSON.parse(request.responseText);
             let route = response_json.routes;
             if (route[0] != undefined) {
+                Alert.alert(
+                    'Success',
+                    'Route was found!',
+                    [
+                        {text: 'OK', onPress: () => console.log('OK Pressed')},
+                    ]
+                );
                 callback(route[0].geometry);
             } else {
-                console.log("No route found!");
+                Alert.alert(
+                    'Error',
+                    'No Route was found!',
+                    [
+                        {text: 'OK', onPress: () => console.log('OK Pressed')},
+                    ]
+                );
             }
+            return;
+        }
 
+        if (request.readyState == 4 && request.status >= 400) {
+            Alert.alert(
+                'Error',
+                'Failed to connect to server, please try again later.',
+                [
+                    {text: 'OK', onPress: () => console.log('OK Pressed')},
+                ]
+            );
         }
     }
 };
