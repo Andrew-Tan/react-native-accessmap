@@ -15,7 +15,8 @@ import {
     TouchableHighlight,
     TextInput,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    Switch
 } from 'react-native'
 import {mainScript} from '../actions/mapScript'
 import {get_route} from '../actions/route'
@@ -29,6 +30,8 @@ let MapView = React.createClass({
             mapCenter: {lat: 47.6553351,lng: -122.3057086},
             lastPosition: null,
             watchID: null,
+            sidewalksVisibility: true,
+            crossingsVisibility: true
         };
     },
 
@@ -88,21 +91,13 @@ let MapView = React.createClass({
         let max_longitude = -500;
         let max_latitude = -500;
         geometry.coordinates.forEach(function (point) {
-            if (point[1] < min_latitude) {
-                min_latitude = point[1];
-            }
+            if (point[1] < min_latitude) { min_latitude = point[1];}
 
-            if (point[1] > max_latitude) {
-                max_latitude = point[1];
-            }
+            if (point[1] > max_latitude) { max_latitude = point[1]; }
 
-            if (point[0] < min_longitude) {
-                min_longitude = point[0];
-            }
+            if (point[0] < min_longitude) { min_longitude = point[0]; }
 
-            if (point[0] > max_longitude) {
-                max_longitude = point[0];
-            }
+            if (point[0] > max_longitude) { max_longitude = point[0]; }
         });
         let LngLatBound = [
             [
@@ -152,6 +147,40 @@ let MapView = React.createClass({
         }
     },
 
+    setVisibility: function (layerID, visibility) {
+        let visible = visibility ? 'visible' : 'none';
+        switch (layerID) {
+            case "sidewalks":
+                this.setState({sidewalksVisibility: visibility});
+                let sidewalkJson = {
+                    "func": "setVisibility",
+                    "args": [
+                        "sidewalks-outline",
+                        visible
+                    ]
+                };
+                this.refs.webviewbridge.sendToBridge(JSON.stringify(sidewalkJson));
+                sidewalkJson.args[0] = "sidewalks";
+                this.refs.webviewbridge.sendToBridge(JSON.stringify(sidewalkJson));
+                break;
+            case "crossings":
+                this.setState({crossingsVisibility: visibility});
+                let crossingJson = {
+                    "func": "setVisibility",
+                    "args": [
+                        "crossings-outline",
+                        visible
+                    ]
+                };
+                this.refs.webviewbridge.sendToBridge(JSON.stringify(crossingJson));
+                crossingJson.args[0] = "crossings";
+                this.refs.webviewbridge.sendToBridge(JSON.stringify(crossingJson));
+                break;
+            default:
+                break;
+        }
+    },
+
     render: function () {
         // StatusBar.setHidden(true);
         this.props.routeFunc(this.getRouteByCoordinate.bind(this));
@@ -167,6 +196,14 @@ let MapView = React.createClass({
                         source={require('./MapboxGL.html')}/>
                 </View>
                 <ScrollView style={styles.scrollView}>
+                    <Switch
+                        onValueChange={(value) => this.setVisibility('sidewalks', value)}
+                        style={{marginBottom: 10}}
+                        value={this.state.sidewalksVisibility} />
+                    <Switch
+                        onValueChange={(value) => this.setVisibility('crossings', value)}
+                        style={{marginBottom: 10}}
+                        value={this.state.crossingsVisibility} />
                     <TouchableHighlight
                         activeOpacity={50}
                         underlayColor={'#00008b'}
@@ -202,7 +239,7 @@ let MapView = React.createClass({
                     <View>
                         <Image
                             style={{width: 50, height: 50}}
-                            source={require('../menu_icon.png')}
+                            source={require('../../../assets/round-border-menu-bar-512.png')}
                         />
                     </View>
                 </TouchableOpacity>

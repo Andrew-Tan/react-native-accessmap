@@ -27,6 +27,7 @@
 
 <div id='map'></div>
 <br/>
+<script src='../../../node_modules/chroma-js/chroma.js'></script>
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiYml0bG9ja2VyIiwiYSI6ImNpdWVxdzQ2ZjAwY2oyeXJ1ZHBnOHg4ZGcifQ.k1PUnopcHUTI4vcuP1qvkg';
     var map = new mapboxgl.Map({
@@ -41,6 +42,100 @@
         accessToken: mapboxgl.accessToken
     }));
 
+    map.on('load', function () {
+        const clickable = 16;
+
+        // Sidewalk color scale
+        let colorScale = chroma.scale(['lime', 'yellow', 'red']);
+
+        const tilesURL = "https://accessmapseattle.com/tiles/seattle/{z}/{x}/{y}.mvt";
+
+        map.addSource('seattle', {
+            type: 'vector',
+            tiles: [tilesURL],
+            attribution: '&copy; AccessMap'
+        });
+
+        // Crossings
+        map.addLayer({
+            id: 'crossings-outline',
+            type: 'line',
+            source: 'seattle',
+            'source-layer': 'crossings',
+            filter: ['==', 'curbramps', true],
+            paint: {
+                'line-color': '#000000',
+                'line-width': {
+                    stops: [[12, 0.5], [clickable, 2], [20, 8]]
+                }
+            },
+            layout: {
+                'line-cap': 'round'
+            }
+        }, 'bridge-path-bg');
+
+        map.addLayer({
+            id: 'crossings',
+            type: 'line',
+            source: 'seattle',
+            'source-layer': 'crossings',
+            filter: ['==', 'curbramps', true],
+            paint: {
+                'line-color': '#ffffff',
+                'line-width': {
+                    stops: [[12, 0.1], [clickable, 0.5], [20, 2]]
+                }
+            },
+            minzoom: 14
+        }, 'bridge-path-bg');
+
+        // Street crossings
+        map.addLayer({
+            id: 'sidewalks-outline',
+            type: 'line',
+            source: 'seattle',
+            'source-layer': 'sidewalks',
+            paint: {
+                'line-color': '#000000',
+                'line-width': {
+                    stops: [[12, 1.5], [clickable, 5], [20, 12]]
+                },
+                'line-opacity': {
+                    stops: [[13, 0.0], [clickable, 0.1], [20, 0.2]]
+                }
+            },
+            layout: {
+                'line-cap': 'round'
+            }
+        }, 'bridge-path-bg');
+
+        map.addLayer({
+            id: 'sidewalks',
+            type: 'line',
+            source: 'seattle',
+            'source-layer': 'sidewalks',
+            paint: {
+                'line-color': {
+                    property: 'grade',
+                    stops: [
+                        [0.0, colorScale(0.0).hex()],
+                        [0.05, colorScale(0.5).hex()],
+                        [0.08333, colorScale(1.0).hex()]
+                    ]
+                },
+                'line-width': {
+                    stops: [[12, 0.5], [clickable, 2], [20, 8]]
+                },
+                'line-opacity': {
+                    stops: [[12, 0.5], [clickable, 1.0], [20, 1.0]]
+                }
+            },
+            layout: {
+                'line-cap': 'round'
+            }
+        }, 'bridge-path-bg');
+    });
+
     map.on('moveend', function (e) {
         var center = map.getCenter();
         var jsonToReturn = {
@@ -49,6 +144,7 @@
         };
         WebViewBridge.send(JSON.stringify(jsonToReturn));
     });
+
 /*    document.getElementById('fly').addEventListener('click', function () {
         map.fitBounds([[
             -122.313952,

@@ -13,7 +13,6 @@ const {
 const { Component } = React;
 
 const window = Dimensions.get('window');
-// const uri = 'https://pickaface.net/gallery/avatar/Opi51c74d0125fd4.png';
 const uri = 'https://avatars3.githubusercontent.com/u/19319325?v=3&s=460';
 
 const styles = StyleSheet.create({
@@ -84,12 +83,13 @@ module.exports = class Menu extends Component {
         super(props);
         this.state = {
             origin: -500,
-            destination: -500
+            destination: -500,
+            sidewalksVisibility: true,
+            crossingsVisibility: true
         };
     }
 
     onLinkSelected(instruction) {
-        console.log("InstructionReceived: " + instruction);
         let url = 'https://www.accessmapseattle.com/';
         switch (instruction) {
             case 'About':

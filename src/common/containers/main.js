@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Router, Scene } from 'react-native-router-flux';
 
-import DrawerScene from './Drawer';
+import DrawerScene from './sideMenu';
 import MapView from '../components/map'
 
 export default class App extends Component {

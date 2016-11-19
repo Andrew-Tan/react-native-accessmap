@@ -54,6 +54,9 @@ export var mainScript = function () {
                     };
                     WebViewBridge.send(JSON.stringify(jsonToReturn));
                     break;
+                case "setVisibility":
+                    map.setLayoutProperty(jsonData.args[0], 'visibility', jsonData.args[1]);
+                    break;
                 default:
                     break;
             }

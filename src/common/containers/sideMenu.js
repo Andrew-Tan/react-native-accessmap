@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Drawer from 'react-native-drawer';
-const Menu = require('./menu');
+const Menu = require('../components/menu');
 import {Actions, DefaultRenderer} from 'react-native-router-flux';
 
 export default class DrawerScene extends Component {
