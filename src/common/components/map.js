@@ -204,7 +204,7 @@ let MapView = React.createClass({
 
     render: function () {
         // StatusBar.setHidden(true);
-        this.props.mapFunc(this.mapFunctions.bind(this));
+        this.props.mapFunc(this.mapFunctions);
         return (
             <View style={styles.container}>
                 <View style={styles.top_padding} />
@@ -214,7 +214,7 @@ let MapView = React.createClass({
                         onBridgeMessage={this.onBridgeMessage}
                         javaScriptEnabled={true}
                         injectedJavaScript={"(" + mainScript.toString() + "())"}
-                        source={require('./MapboxGL.html')}/>
+                        source={require('./WebViews/MapboxGL.html')}/>
                 </View>
                 <TouchableOpacity
                     activeOpacity={0.2}
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0f8ff'
     },
     map: {
-        flex: 10
+        flex: 1
     },
     button: {
         alignItems: 'center',
