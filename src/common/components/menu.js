@@ -40,7 +40,14 @@ const styles = StyleSheet.create({
         top: 20,
     },
     item: {
+        marginRight: 80,
         fontSize: 25,
+        fontWeight: '300',
+        paddingTop: 5,
+    },
+    item_text: {
+        marginRight: 80,
+        fontSize: 15,
         fontWeight: '300',
         paddingTop: 5,
     },
@@ -72,6 +79,20 @@ const styles = StyleSheet.create({
         marginRight: 80,
         paddingLeft: 10,
         paddingRight: 10
+    },
+    horizontalView: {
+        flex: 1,
+        flexDirection: 'row',
+        marginBottom: 10
+    },
+    switch: {
+        flex: 1,
+        alignSelf: 'center'
+    },
+    switch_text: {
+        flex: 3,
+        alignSelf: 'center',
+        fontSize: 20
     }
 });
 
@@ -162,19 +183,29 @@ module.exports = class Menu extends Component {
                     <Text style={styles.name}>Login to AccessMap</Text>
                 </View>
 
-                <Switch
-                    onValueChange={(value) => this.toggleMapSwitch("sidewalks", value)}
-                    style={{marginBottom: 10}}
-                    value={this.state.sidewalksVisibility} />
+                <View style={styles.horizontalView}>
+                    <Switch
+                        onValueChange={(value) => this.toggleMapSwitch("sidewalks", value)}
+                        style={styles.switch}
+                        value={this.state.sidewalksVisibility} />
+                    <Text style={styles.switch_text}>
+                        Sidewalk Lines
+                    </Text>
+                </View>
 
-                <Switch
-                    onValueChange={(value) => this.toggleMapSwitch("crossings", value)}
-                    style={{marginBottom: 10}}
-                    value={this.state.crossingsVisibility} />
+                <View style={styles.horizontalView}>
+                    <Switch
+                        onValueChange={(value) => this.toggleMapSwitch("crossings", value)}
+                        style={styles.switch}
+                        value={this.state.crossingsVisibility} />
+                    <Text style={styles.switch_text}>
+                        Crossing Lines
+                    </Text>
+                </View>
 
                 <TextInput
                     style={styles.textInput}
-                    placeholder="Origin..."
+                    placeholder="Origin Coordinate..."
                     autoCorrect={false}
                     autoCapitalize={'none'}
                     onChangeText={(text) => this.state.origin = text}
@@ -182,7 +213,7 @@ module.exports = class Menu extends Component {
 
                 <TextInput
                     style={styles.textInput}
-                    placeholder="Destination..."
+                    placeholder="Destination Coordinate..."
                     autoCorrect={false}
                     autoCapitalize={'none'}
                     onChangeText={(text) => this.state.destination = text}
@@ -193,16 +224,7 @@ module.exports = class Menu extends Component {
                     style={styles.button}
                     onPress={() => this.getRoute()} >
                     <View>
-                        <Text style={styles.button_text}>Draw Route</Text>
-                    </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    activeOpacity={0.5}
-                    style={styles.button}
-                    onPress={() => this.getRoute(false)} >
-                    <View>
-                        <Text style={styles.button_text}>Fast Draw</Text>
+                        <Text style={styles.button_text}>Get Route</Text>
                     </View>
                 </TouchableOpacity>
 
@@ -216,6 +238,11 @@ module.exports = class Menu extends Component {
                         <Text style={styles.button_text}>Remove Route</Text>
                     </View>
                 </TouchableOpacity>
+
+                <Text style={styles.item_text}>
+                    By pressing get route without specifying the origin and destination coordinate, the app will
+                    find a route from current position to current center of the map
+                </Text>
 
                 <Text
                     onPress={() => this.onLinkSelected('About')}

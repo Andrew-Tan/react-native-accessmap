@@ -22,7 +22,6 @@ import {
 import {mainScript} from '../actions/mapScript'
 import {get_route} from '../actions/route'
 let WebViewBridge = require('react-native-webview-bridge');
-
 import {Actions} from 'react-native-router-flux';
 
 let MapView = React.createClass({
@@ -30,7 +29,7 @@ let MapView = React.createClass({
         return {
             mapCenter: {lat: 47.6553351,lng: -122.3057086},
             lastPosition: null,
-            watchID: null,
+            watchID: null
         };
     },
 
@@ -157,6 +156,16 @@ let MapView = React.createClass({
     getRouteByCoordinate: function (origin, destination) {
         if (origin == null || destination == null) {
             console.log("\n\n\nFrom current pos and map center!\n\n\n")
+            if (this.state.lastPosition == null) {
+                Alert.alert(
+                    'Error',
+                    'Failed to retrieve current position. Make sure GPS tracking has turned on.',
+                    [
+                        {text: 'OK', onPress: () => console.log('OK Pressed')},
+                    ]
+                );
+                return;
+            }
             let currentPos = this.state.lastPosition.coords;
             get_route(
                 [currentPos.latitude, currentPos.longitude],
@@ -203,7 +212,6 @@ let MapView = React.createClass({
     },
 
     render: function () {
-        // StatusBar.setHidden(true);
         this.props.mapFunc(this.mapFunctions);
         return (
             <View style={styles.container}>
@@ -227,6 +235,11 @@ let MapView = React.createClass({
                         />
                     </View>
                 </TouchableOpacity>
+                <View style={styles.overlay_copyright}>
+                    <Text>
+                        © AccessMap © Mapbox © OpenStreetMap
+                    </Text>
+                </View>
             </View>
         );
     }
@@ -268,15 +281,32 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         alignItems: 'center',
-        // borderWidth: 1,
-        borderRadius: 10,
         paddingTop: 10,
         paddingBottom: 10,
         marginTop: 5,
         marginBottom: 5,
         marginLeft: 5,
         marginRight: 5,
-        // backgroundColor: '#6495ed',
+    },
+    overlay_copyright: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        width: 500,
+        height: 17,
+        alignItems: 'flex-end',
+    },
+    overlay_loading: {
+        flex: 1,
+        // alignSelf: 'center',
+        alignItems: 'stretch',
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        opacity: 0.5,
+        backgroundColor: 'black',
+        width: 500,
+        height: 1000
     },
     top_padding: {
         paddingTop: 20,
