@@ -155,11 +155,10 @@ let MapView = React.createClass({
 
     getRouteByCoordinate: function (origin, destination) {
         if (origin == null || destination == null) {
-            console.log("\n\n\nFrom current pos and map center!\n\n\n")
             if (this.state.lastPosition == null) {
                 Alert.alert(
                     'Error',
-                    'Failed to retrieve current position. Make sure GPS tracking has turned on.',
+                    'Failed to retrieve current position. Make sure GPS tracking has been turned on.',
                     [
                         {text: 'OK', onPress: () => console.log('OK Pressed')},
                     ]

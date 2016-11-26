@@ -5,6 +5,6 @@ import {
     Text,
     View
 } from 'react-native'
-import Map from './src/common/components/map'
+import Application from './src/common/containers/main'
 
-AppRegistry.registerComponent('AccessMap', () => Map);
+AppRegistry.registerComponent('AccessMap', () => Application);
